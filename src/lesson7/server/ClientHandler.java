@@ -5,13 +5,11 @@ import java.io.*;
 
 public class ClientHandler {
 
-    //Служебный класс, которому сервер передаст сокет
-    //По сокету будет происходить общение с подключившимся клиентом
 
-    private MServer server; //ссылка на сервер для клиента
+    private MServer server;
     private Socket socket;
-    private DataInputStream  in; //поток ввода, используется UTF-кодировка
-    private DataOutputStream out;//поток вывода, используется UTF-кодировка
+    private DataInputStream  in;
+    private DataOutputStream out;
     private String clientName;
 
     private static int counter = 0;
@@ -27,15 +25,13 @@ public class ClientHandler {
             this.in = new DataInputStream(socket.getInputStream());
             this.out = new DataOutputStream(socket.getOutputStream());
 
-            //Множество клиентов потребует множество потоков обработки
-            new Thread(()-> {
+           new Thread(()-> {
 
-                //Попробуйте сделать то же самое, но через реализацию Runnable()!
                 try
                 {
                     while(true)
                     {
-                        String str = in.readUTF();//блокирующая операция!!! Читаем то, что пришло от клиента
+                        String str = in.readUTF();
 
                         System.out.println("A message from a client: " + str);
 
@@ -48,10 +44,10 @@ public class ClientHandler {
                         {
                             String to = str.split(" ")[1];
                             String msg = str.split(" ")[2];
-                            server.wisperMsg(this, to, msg); // сообщение участниками диалога
+                            server.wisperMsg(this, to, msg);
 
                         } else {
-                            server.broadcastMsg("[" + this.clientName + "] " + str);//Cервер разослал сообщение String str = in.readUTF() ВСЕМ подключенным клиентам
+                            server.broadcastMsg("[" + this.clientName + "] " + str);
                         }
                         out.flush();
                     }
@@ -60,14 +56,12 @@ public class ClientHandler {
                 {
                     ex.printStackTrace();
                 }
-                finally//освобождаем ресурсы
+                finally
                 {
                     try
                     {
                         in.close();
-                        //out.close();   //в отдельный блок try - catch
-                        //socket.close();//в отдельный блок try - catch
-                    }
+                          }
                     catch(IOException ex)
                     {
                         ex.printStackTrace();
@@ -89,10 +83,9 @@ public class ClientHandler {
                         ex.printStackTrace();
                     }
 
-                    server.remove_client(this);//Клиент отключился и больше не активен
+                    server.remove_client(this);
 
-                }//finally
-
+                }
             }).start();
 
         }
@@ -100,22 +93,21 @@ public class ClientHandler {
         {
             ex.printStackTrace();
         }
-    }//public ClientHandler
+    }
 
     public String getClientName() {
         return this.clientName;
     }
 
-    //если нужно послать сообщение клиенту
     public void sendMsg(String msg)
     {
         try
         {
-            out.writeUTF(msg);//отослать сообщение клиенту
+            out.writeUTF(msg);
         }
         catch(IOException ex)
         {
             ex.printStackTrace();
         }
     }
-}//class ClientHandler
+}

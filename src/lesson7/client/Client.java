@@ -13,16 +13,13 @@ public class Client extends Application{
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("FXMLDocument.fxml")));
 
-        //Scene scene = new Scene(root);
 
         stage.setScene(new Scene(root));
         stage.setTitle("ChatWindow");
         stage.show();
     }
 
-    /**
-     * @param args the command line arguments
-     */
+
     public static void main(String[] args) {
         launch(args);
     }

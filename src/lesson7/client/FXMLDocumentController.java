@@ -13,10 +13,10 @@ import java.io.*;
 
 public class FXMLDocumentController implements Initializable {
 
-    private Socket socket;     //чтобы общатьс¤ с серваком
+    private Socket socket;
 
-    private DataInputStream  in; //поток ввода, используетс¤ UTF-кодировка
-    private DataOutputStream out;//поток вывода, используетс¤ UTF-кодировка
+    private DataInputStream  in;
+    private DataOutputStream out;
 
     @FXML
     private Button sendButton;
@@ -32,9 +32,9 @@ public class FXMLDocumentController implements Initializable {
         String str = TextField.getText();
         try
         {
-            out.writeUTF(str);//сообщение пошло на сервер
+            out.writeUTF(str);
             TextField.clear();
-            TextField.requestFocus();//фокус ввода на поле ввода сообщени¤
+            TextField.requestFocus();
         }
         catch (IOException ex)
         {
@@ -43,39 +43,25 @@ public class FXMLDocumentController implements Initializable {
 
     }
 
-    @Override//будет выполн¤тьс¤ при запуске приложени¤
+    @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //URL              - доступ к удалЄнному *.fxml
-        //ResourceBundle   - доступ к ресурсам, упакованным в jar, если они есть
 
 
 
         try
         {
-            //“ри кита при работе в сети:
+
             socket = new Socket("localhost", 12345);
             in  = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
 
-            //получить эхо-ответ от сервера
-           /*“ак делать нельз¤. ћы никогда не выйдем из цикла.
-             ѕоток исполнени¤ будет заблокирован методом in.readUTF()
-               while(true)
-               {
-                  String str = in.readUTF();
-                  TextArea.appendText(str + "\n");
-               }
-           */
-            //“ак сообщени¤ от сервера будут обрабатыватьс¤ в параллельном потоке
-            //сразу после инициализации приложени¤.
-            //Ќе забывайте вызвать метод start() дл¤ new Thread!
-            new Thread(() -> {
+               new Thread(() -> {
                 try {
 
                     while(true)
                     {
                         String str = in.readUTF();
-                        //System.out.println(str);
+
                         TextArea.appendText(str + "\n");
                     }
                 }
